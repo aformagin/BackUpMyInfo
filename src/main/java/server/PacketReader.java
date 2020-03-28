@@ -1,6 +1,7 @@
 package server;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.IOException;
 import java.net.Socket;
 
 //# of files
@@ -26,36 +27,26 @@ public class PacketReader implements Runnable {
 
     @Override
     public void run(){
+
+    }
+
+    public void getData(){
         try {
             for(int x = 0; x < numberOfFiles; x++){
                 filePath = in.readUTF();
+                System.out.println("Read FilePath: " + this.filePath);
                 fileSize = in.readInt();
+                System.out.println("Read FileSize: " + this.fileSize);
                 fileName = in.readUTF();
+                System.out.println("Read FileName: " + this.fileName);
                 byteArray = new byte[fileSize];
                 byteArray = in.readNBytes(fileSize);
+                System.out.println("Read Byte Array");
             }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public Packet createPacket() throws IOException {
-        File file = new File(filePath + fileName);
-        /*if(file.mkdirs()){
-            System.out.println("Success");
-        } else{
-            System.out.println("Dir Already Exists");
-            throw new IOException();
-        }*/
-        if(file.createNewFile()){
-            System.out.println("Success");
-        } else{
-            System.out.println("File Already Exists");
-        }
-        OutputStream fw = new FileOutputStream(file);
-        fw.write(byteArray);
-        return new Packet(file);
     }
 
 
