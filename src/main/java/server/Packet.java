@@ -3,11 +3,6 @@ package server;
 
 import org.apache.commons.io.FilenameUtils;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-
 import java.io.*;
 
 
@@ -47,9 +42,16 @@ public class Packet {
 
 
     public static Packet createPacket(String filename, String filePath, byte[] byteArray) throws IOException {
-        File file = new File(filename);
+
+        File dir = new File(filePath);
+        if(dir.mkdirs()){
+            System.out.println("Created Directories");
+        } else{
+            System.out.println("Dirs Already Exists");
+        }
+        File file = new File(filePath + filename);
         if(file.createNewFile()){
-            System.out.println("Success");
+            System.out.println("Created File");
         } else{
             System.out.println("File Already Exists");
         }
