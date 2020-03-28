@@ -1,11 +1,15 @@
 package client;
 
-import org.apache.commons.io.FilenameUtils;
 import server.Packet;
 
-import java.io.*;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.net.Socket;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class Client {
     private static int PORT;
@@ -78,7 +82,7 @@ public class Client {
                             "\nSIZE: " + p.getFileSize() +
                             "\nNAME: " + p.getFilename());
                     dataOutputStream.writeUTF(p.getFilePath());//File path
-                    dataOutputStream.writeInt(p.getFileSize()); //Size
+                    dataOutputStream.writeInt((int)p.getFileSize()); //Size
                     dataOutputStream.writeUTF(p.getFilename());//Name of file
                     dataOutputStream.write(p.getByteArray());//ByteArray
                 }
