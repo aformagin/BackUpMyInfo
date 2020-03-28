@@ -1,11 +1,15 @@
 package client;
 
-import org.apache.commons.io.FilenameUtils;
 import server.Packet;
 
-import java.io.*;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.net.Socket;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class Client {
     private static int PORT;
@@ -49,6 +53,7 @@ public class Client {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
+                  
                 }
                 try {
                     Thread.sleep(1000);
