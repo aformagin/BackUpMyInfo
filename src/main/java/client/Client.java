@@ -103,6 +103,7 @@ public class Client {
 
 
         ArrayList<File> dirList = new ArrayList<>(new LinkedList<>(Arrays.asList(f.listFiles())));
+
         for(int x = 0; x < dirList.size(); x++){
             File temp = dirList.get(x);
             if(temp.isDirectory()){

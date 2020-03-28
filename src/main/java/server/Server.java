@@ -23,37 +23,50 @@ public class Server {
     }
 
     public void start(int port, String[] args) {
-        while (!stopFlag) {
-            try {
-                serverSocket = new ServerSocket(port);
-                clientSocket = serverSocket.accept();
+        try {
+            serverSocket = new ServerSocket(port);
+            System.out.println("Waiting for Connection");
+            clientSocket = serverSocket.accept();
+            System.out.println("Connected!");
 
-                in = new DataInputStream(clientSocket.getInputStream());
-                out = new DataOutputStream(clientSocket.getOutputStream());
+            in = new DataInputStream(clientSocket.getInputStream());
+            out = new DataOutputStream(clientSocket.getOutputStream());
 
-                numberOfFiles = in.readInt();
+            numberOfFiles = in.readInt();
+            System.out.println("Number of Files: " + numberOfFiles);
 
-                pr = new PacketReader(clientSocket);
-                t = new Thread(pr);
+            Packet[] packets = new Packet[numberOfFiles];
 
-                for(int x = 0; x < numberOfFiles; x++){
-                    t.start();
-                    t.join();
-                    packetList.add(pr.createPacket());
-                }
+            String filename;
+            String filePath;
+            int fileSize;
+            byte[] byteArray;
 
-                out.close();
-                in.close();
+            for (int x = 0; x < numberOfFiles; x++) {
+                System.out.println("File #" + (x+1) + ":");
+                filePath = in.readUTF();
+                System.out.println("File Path: " + filePath);
+                fileSize = in.readInt();
+                System.out.println("File Size: " + fileSize);
+                filename = in.readUTF();
+                System.out.println("File Name: " + filename);
+                byteArray = new byte[fileSize];
+                in.read(byteArray);
 
-            } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
+                packets[x] = Packet.createPacket(filename, filePath, byteArray);
             }
+
+            out.close();
+            in.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    public static void main(String[] args){
+        public static void main(String[] args){
         Server s = new Server();
 
-        s.start(55588, args);
+        s.start(25565, args);
     }
 }

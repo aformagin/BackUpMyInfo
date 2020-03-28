@@ -1,11 +1,15 @@
 package server;
 
+
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+
+import java.io.*;
+
 
 public class Packet {
 
@@ -19,7 +23,7 @@ public class Packet {
     public Packet(String filename, String filePath) throws IOException {
         this.filename = filename;
         this.filePath = filePath;
-        File file = new File(this.filePath + this.filename);
+        File file = new File(this.filename);
         if(!file.exists()) throw new IOException();
         in = new BufferedInputStream(new FileInputStream(file));
         this.fileSize = (int) file.length();
@@ -32,11 +36,26 @@ public class Packet {
         if(!file.exists()) throw new IOException();
         in = new BufferedInputStream(new FileInputStream(file));
 
+
         this.filePath = FilenameUtils.getPath(file.getPath());
+
         this.filename = file.getName();
         this.fileSize = (int) file.length();
         byteArray = new byte[this.fileSize];
         byteArray = in.readNBytes(fileSize);
+    }
+
+
+    public static Packet createPacket(String filename, String filePath, byte[] byteArray) throws IOException {
+        File file = new File(filename);
+        if(file.createNewFile()){
+            System.out.println("Success");
+        } else{
+            System.out.println("File Already Exists");
+        }
+        OutputStream fw = new FileOutputStream(file);
+        fw.write(byteArray);
+        return new Packet(file);
     }
 
     public String getFilePath() {
