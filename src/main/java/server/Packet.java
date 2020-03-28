@@ -29,6 +29,8 @@ public class Packet {
     public Packet(File file) throws IOException {
         if(!file.exists()) throw new IOException();
         in = new BufferedInputStream(new FileInputStream(file));
+        this.filePath = file.getPath();
+        this.filename = file.getName();
         this.fileSize = (int) file.length();
         byteArray = new byte[this.fileSize];
         byteArray = in.readNBytes(fileSize);
