@@ -1,6 +1,5 @@
-package main.java.client;
+package client;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.*;
@@ -28,40 +27,40 @@ public class Client {
         We're going to take in the files as arguments for the time being
          */
         File f = new File(args[0]);
-        System.out.println(FilenameUtils.getBaseName(args[0]));
-        System.out.println(FilenameUtils.getFullPath(args[0]));
+        //Listing the initial file and folder list
         System.out.println(Arrays.toString(f.listFiles()));
 
 
         List<File> dirList = new LinkedList<File>(Arrays.asList(f.listFiles()));
 
-        //TODO remove so many gets, add local variable
-        for(int x = 0; x < dirList.size() - 1; x++){
+        //TODO Convert to an external method
+        for(int x = 0; x < dirList.size(); x++){
             File temp = dirList.get(x);
             if(temp.isDirectory()){
                 System.out.println(temp.listFiles());
                 for(int y = 0; y < temp.listFiles().length - 1; y++){
-                    System.out.println("Adding");
-                    if(!temp.listFiles().equals(null))
+                    if(!temp.listFiles().equals(null)){
+                        System.out.println("Adding folder");
                         dirList.add(temp.listFiles()[y]);
-                    System.out.println("Added");
+                    }
                 }
             }
-            else{
+            //TODO - Figure out why it isn't listing the files
+            else if(temp.isFile()){
+                //Add to packetQueue
+                System.out.println("Adding File");
+                fileQueue.add(temp);
                 System.out.println(dirList.get(x).getName());
             }
+            else{
+                System.err.println("Invalid File");
+            }
+            System.out.println(x);
         }
         System.out.println(dirList.toString());
-        System.exit(1);
 
-        /*
-        OBJECT NAME: Packet(File)/(Filename, filepath)
-        File
-        File Path - String
-        Size
-        Name
-        ByteArray
-        */
+        //END OF TESTING AREA
+        System.exit(1);
 
         //Adding files to the queue
         for(int x = 0; x < args.length; x++){
