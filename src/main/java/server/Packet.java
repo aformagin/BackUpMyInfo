@@ -1,6 +1,15 @@
 package server;
 
+
+import org.apache.commons.io.FilenameUtils;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+
 import java.io.*;
+
 
 public class Packet {
 
@@ -26,12 +35,16 @@ public class Packet {
     public Packet(File file) throws IOException {
         if(!file.exists()) throw new IOException();
         in = new BufferedInputStream(new FileInputStream(file));
-        this.filePath = file.getPath();
+
+
+        this.filePath = FilenameUtils.getPath(file.getPath());
+
         this.filename = file.getName();
         this.fileSize = (int) file.length();
         byteArray = new byte[this.fileSize];
         byteArray = in.readNBytes(fileSize);
     }
+
 
     public static Packet createPacket(String filename, String filePath, byte[] byteArray) throws IOException {
         File file = new File(filename);
