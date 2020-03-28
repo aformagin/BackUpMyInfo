@@ -1,5 +1,7 @@
 package server;
 
+import org.apache.commons.io.FilenameUtils;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,7 +31,8 @@ public class Packet {
     public Packet(File file) throws IOException {
         if(!file.exists()) throw new IOException();
         in = new BufferedInputStream(new FileInputStream(file));
-        this.filePath = file.getPath();
+
+        this.filePath = FilenameUtils.getPath(file.getPath());
         this.filename = file.getName();
         this.fileSize = (int) file.length();
         byteArray = new byte[this.fileSize];
