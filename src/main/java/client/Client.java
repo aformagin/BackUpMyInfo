@@ -1,6 +1,7 @@
 package client;
 
 import org.apache.commons.io.FilenameUtils;
+import server.Packet;
 
 import java.io.*;
 import java.net.Socket;
@@ -9,17 +10,16 @@ import java.util.*;
 public class Client {
     private static int PORT;
     private static String IP_ADDRESS;
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         //Temp IP and PORT numbers
-        IP_ADDRESS = "thirdspare.com"; //Temporary
+        IP_ADDRESS = "192.168.0.44"; //Temporary
         PORT = 6969; //Nice.
 
         //Variable declaration
         Socket socket = null;
-        FileInputStream fileInputStream;
-        OutputStream outputStream;
         DataOutputStream dataOutputStream;
-        Queue<File> fileQueue = null;//TODO change the object type to custom type later
+
+        Queue<Packet> fileQueue = new LinkedList<>();//TODO change the object type to custom type later
 
         //Let's get down to work!
 //        System.out.println(FilenameUtils.getBaseName(args[0]));
@@ -31,14 +31,14 @@ public class Client {
         System.out.println(Arrays.toString(f.listFiles()));
 
 
-        List<File> dirList = new LinkedList<File>(Arrays.asList(f.listFiles()));
-
+//        List<File> dirList = new LinkedList<File>(Arrays.asList(f.listFiles()));
+        ArrayList<File> dirList = new ArrayList<>(new LinkedList<>(Arrays.asList(f.listFiles())));
         //TODO Convert to an external method
         for(int x = 0; x < dirList.size(); x++){
             File temp = dirList.get(x);
             if(temp.isDirectory()){
                 System.out.println(temp.listFiles());
-                for(int y = 0; y < temp.listFiles().length - 1; y++){
+                for(int y = 0; y < temp.listFiles().length; y++){
                     if(!temp.listFiles().equals(null)){
                         System.out.println("Adding folder");
                         dirList.add(temp.listFiles()[y]);
@@ -46,49 +46,60 @@ public class Client {
                 }
             }
             //TODO - Figure out why it isn't listing the files
-            else if(temp.isFile()){
-                //Add to packetQueue
-                System.out.println("Adding File");
-                fileQueue.add(temp);
-                System.out.println(dirList.get(x).getName());
+            else if(temp.isFile() && !temp.equals(null)){
+                try {
+                    Packet p = new Packet(temp);
+                    fileQueue.add(p);
+                    System.out.println("Adding File");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
             else{
                 System.err.println("Invalid File");
             }
             System.out.println(x);
         }
-        System.out.println(dirList.toString());
+
+
+//        for (int x = 0; x < size; x++){
+//            System.out.println(fileQueue.peek());
+//            if(!fileQueue.isEmpty())
+//                fileQueue.remove();
+//        }
 
         //END OF TESTING AREA
-        System.exit(1);
+//        System.exit(1);
 
-        //Adding files to the queue
-        for(int x = 0; x < args.length; x++){
-            File tempFile = new File(args[x]);
-            fileQueue.add(tempFile);
-        }
-        try {
-            System.out.println("Awaiting connection...");
-            socket = new Socket(IP_ADDRESS, PORT);
-            System.out.println("CONNECTED TO SERVER: " + IP_ADDRESS + ":" + PORT);
+        for(int attempts = 0; attempts < 5; attempts++){
+            try {
+                System.out.println("Awaiting connection...");
+                socket = new Socket(IP_ADDRESS, PORT);
+                System.out.println("CONNECTED TO SERVER: " + IP_ADDRESS + ":" + PORT);
+                int size = fileQueue.size();
+
+                dataOutputStream = new DataOutputStream(socket.getOutputStream());
+                dataOutputStream.writeInt(size);//Sending number of files in queue
 
 
-            dataOutputStream = new DataOutputStream(socket.getOutputStream());
-            dataOutputStream.writeInt(fileQueue.size());//Sending number of files in queue
-            for(int x = 0; x < fileQueue.size(); x++){
-                dataOutputStream.writeUTF("filepath");//File path
-                dataOutputStream.writeInt(1); //Size
-                dataOutputStream.writeUTF("Name");//Name of file
-//                dataOutputStream.write();//ByteArray
+                for(int x = 0; x < size; x++){
+                    Packet p = fileQueue.remove();
+                    System.out.println(p.getFilePath());
+                    dataOutputStream.writeUTF(p.getFilePath());//File path
+                    dataOutputStream.writeInt(p.getFileSize()); //Size
+                    dataOutputStream.writeUTF(p.getFilename());//Name of file
+                    dataOutputStream.write(p.getByteArray());//ByteArray
 
+                    if(fileQueue.isEmpty()){
+                        dataOutputStream.close();
+
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            Thread.sleep(1000);
         }
-
-
-
-
 
     }
 }

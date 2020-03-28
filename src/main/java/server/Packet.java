@@ -34,5 +34,35 @@ public class Packet {
         byteArray = in.readNBytes(fileSize);
     }
 
+    public String getFilePath() {
+        return filePath;
+    }
 
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public int getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(int fileSize) {
+        this.fileSize = fileSize;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+    public byte[] getByteArray() {
+        return byteArray;
+    }
+
+    public void setByteArray(byte[] byteArray) {
+        this.byteArray = byteArray;
+    }
 }
