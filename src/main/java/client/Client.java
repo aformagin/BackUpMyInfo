@@ -1,7 +1,5 @@
 package client;
 
-import org.apache.commons.io.FilenameUtils;
-
 import java.io.*;
 import java.net.Socket;
 import java.util.*;
@@ -19,7 +17,7 @@ public class Client {
         FileInputStream fileInputStream;
         OutputStream outputStream;
         DataOutputStream dataOutputStream;
-        Queue<File> fileQueue = null;//TODO change the object type to custom type later
+        Queue<File> fileQueue = new LinkedList<>();
 
         //Let's get down to work!
 //        System.out.println(FilenameUtils.getBaseName(args[0]));
@@ -32,6 +30,7 @@ public class Client {
 
 
         List<File> dirList = new LinkedList<File>(Arrays.asList(f.listFiles()));
+        ArrayList<File> dirList1 = new ArrayList<>(new LinkedList<>(Arrays.asList(f.listFiles())));
 
         //TODO Convert to an external method
         for(int x = 0; x < dirList.size(); x++){
