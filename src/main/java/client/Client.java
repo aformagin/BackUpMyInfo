@@ -3,11 +3,8 @@ package client;
 import server.Packet;
 
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -39,13 +36,7 @@ public class Client {
 
                     for(int x = 0; x < size; x++){
                         Packet p = fileQueue.remove();
-                        System.out.println("PATH: " + p.getFilePath() +
-                                "\nSIZE: " + p.getFileSize() +
-                                "\nNAME: " + p.getFilename());
-                        dataOutputStream.writeUTF(p.getFilePath());//File path
-                        dataOutputStream.writeInt(p.getFileSize()); //Size
-                        dataOutputStream.writeUTF(p.getFilename());//Name of file
-                        dataOutputStream.write(p.getByteArray());//ByteArray
+                        p.send(dataOutputStream);
                     }
                     if(fileQueue.isEmpty()){
                         dataOutputStream.close();
@@ -75,7 +66,7 @@ public class Client {
 
         //Let's get down to work!
         //Temp IP and PORT numbers
-        IP_ADDRESS = "192.168.0.44"; //Temporary
+        IP_ADDRESS = "127.0.0.1"; //Temporary
         PORT = 25565; //Nice.
 
         Client c = new Client(IP_ADDRESS, PORT);

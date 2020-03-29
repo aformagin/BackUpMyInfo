@@ -1,77 +1,34 @@
 package server;
 
-
-import org.apache.commons.io.FilenameUtils;
-
 import java.io.*;
-
 
 public class Packet {
 
-    private int chunkSize;
     private File file;
-    private String filePath;    //Includes / at end
+    private String filePath;    //Needs / at end
     private long fileSize;
     private String filename;
     private byte[] byteArray;
-    private BufferedInputStream in;
+    private DataInputStream in;
 
-    public Packet(String filename, String filePath) throws IOException {
-        this.filename = filename;
-        this.filePath = filePath;
-        File file = new File(this.filename);
-        if(!file.exists()) throw new IOException();
-        in = new BufferedInputStream(new FileInputStream(file));
+    public Packet(File file, String filePath) throws IOException {
+        if(!file.exists()) throw new IOException();             //Checks if file exists, if not, throw IOException
+        in = new DataInputStream(new FileInputStream(file));    //Stream Reader
+        this.filename = file.getName();                         //Sets file name
+        this.filePath = filePath;                               //Sets file path
+        this.fileSize = file.length();                          //Sets file size
     }
 
-    public Packet(File file) throws IOException {
-        if(!file.exists()) throw new IOException();
-        in = new BufferedInputStream(new FileInputStream(file));
-        this.filePath = FilenameUtils.getPath(file.getPath());
-        this.filename = file.getName();
-
-        //Can be up to 9.22e18
-        this.fileSize = file.length();
-    }
-
+    //Sends file path, size, name, and data into an output stream.
     public void send(DataOutputStream out) throws IOException {
-        DataInputStream in = new DataInputStream(new FileInputStream(this.file));
+        out.writeUTF(this.filePath);            //Send file path
+        out.writeLong(this.fileSize);           //Send file size
+        out.writeUTF(this.filename);            //Send file name
 
-        out.writeUTF(this.filePath);//File path
-        out.writeLong(this.fileSize); //Size
-        out.writeUTF(this.filename);//Name of file
-
-        //Chunk Scaling:
-        // If file is large, use larger chunk size to reduce # of ops
-
-        //If file is less than 5MB
-        if(fileSize<5000000){
-            chunkSize = 5000000;
-        } else if(5000000 < fileSize && fileSize < 50000000){   //If file is between 5-50MB
-            chunkSize = 50000000;
-        } else{         //If file is between 50-500MB
-            chunkSize = 500000000;
+        //Send bytes from file to stream
+        for(long i = 0; i < fileSize; i++){
+            out.writeByte(in.readByte());
         }
-
-        byteArray = new byte[chunkSize];
-        while(in.available() > 0){
-            //TODO: Read and write bytes from file to stream
-            in.read(byteArray);
-            out.write(byteArray);
-        }
-    }
-
-    public static void createFile(String filename, String filePath, byte[] byteArray) throws IOException {
-        File dir = new File(filePath);
-        if(dir.mkdirs()){
-            System.out.println("Created Directories");
-        }
-        File file = new File(filePath + filename);
-        if(file.createNewFile()) {
-            System.out.println("Created File");
-        }
-        OutputStream fw = new FileOutputStream(file);
-        fw.write(byteArray);
     }
 
     public String getFilePath() {
