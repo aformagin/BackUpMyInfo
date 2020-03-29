@@ -92,6 +92,7 @@ public class ClientWindow extends JFrame {
 
         ArrayList<File> dirList = new ArrayList<>(new LinkedList<>(Arrays.asList(selectedDir.listFiles())));
 
+        //Sorting through directory lists, and adding them to dirList
         for(int x = 0; x < dirList.size(); x++){
             File tempFile = dirList.get(x);
             if(tempFile.isDirectory()){
@@ -104,11 +105,12 @@ public class ClientWindow extends JFrame {
                 }
             }
 
+
             else if(tempFile.isFile() && !tempFile.equals(null)){
                 try {
 
                     String lookFor = selectedDir.getName();
-                    String givenPath = "backup/";
+                    String givenPath = "backup/"; //Default path
 
                     //Truncating the file path for relative uses
                     if(tempFile.getPath().contains(lookFor)){
@@ -117,11 +119,14 @@ public class ClientWindow extends JFrame {
                     }
                     givenPath = FilenameUtils.getPath(givenPath);
                     System.out.println(givenPath);
-                    Packet p = new Packet(tempFile.getName(), givenPath);
-                    String testString = p.getFilePath();
+                    //Creating the packet of data to be sent
+                    System.out.println(tempFile.getName());
+                    Packet p = new Packet(tempFile, givenPath);
+                    String testString = p.getFilePath(); //DBS
+
 
                     q.add(p);
-                    System.out.println("Adding File");
+                    System.out.println("Adding File"); //DBS
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
