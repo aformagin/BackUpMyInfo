@@ -3,11 +3,8 @@ package client;
 import server.Packet;
 
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
