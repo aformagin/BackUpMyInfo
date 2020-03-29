@@ -19,6 +19,7 @@ public class Client {
 
         window = new ClientWindow();
         window.getUploadBtn().addActionListener(ex->{
+            ClientWindow.test = 1;
             Socket socket = null;
             DataOutputStream dataOutputStream;
             Queue<Packet> fileQueue = new LinkedList<>();
