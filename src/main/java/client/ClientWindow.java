@@ -19,8 +19,11 @@ public class ClientWindow extends JFrame {
     private JTextField username;
     private JPasswordField password;
     private Queue<Packet> q;
-
+    private JTextArea ta;
+    private JScrollPane scrollPane;
+    public static int test;
     private JPanel entryFields, fileDisplay, buttonArea;
+    private JProgressBar pb;
 
     public ClientWindow() {
         entryFields = new JPanel();
@@ -28,6 +31,8 @@ public class ClientWindow extends JFrame {
         buttonArea = new JPanel();
 
         q = new LinkedList<>();
+
+        pb = new JProgressBar();
 
 
         uploadBtn = new JButton("Upload");
@@ -37,30 +42,44 @@ public class ClientWindow extends JFrame {
         password = new JPasswordField("Password");
 
         list = new JList<String>();
+        ta = new JTextArea();
+        ta.setEditable(false);
+        ta.setText("File List: ");
+
+        scrollPane = new JScrollPane(ta);
+        scrollPane.createVerticalScrollBar();
+        scrollPane.createHorizontalScrollBar();
+        scrollPane.setPreferredSize(new Dimension(400, 250));
+        scrollPane.setMaximumSize(new Dimension(400, 350));
 
         //Fields
         entryFields.add(username);
         entryFields.add(password);
         //File List Display
-        fileDisplay.add(list);
+        fileDisplay.add(scrollPane);
+        fileDisplay.add(pb);
         //Buttons
         buttonArea.add(uploadBtn);
         buttonArea.add(openFilesBtn);
-        setSize(new Dimension(800, 800));
+        setSize(new Dimension(450, 400));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
+        setTitle("Save My Data Online");
         JPanel p = new JPanel();//Temporary JPanel to test adding the other panels
-        p.add(entryFields);
-        p.add(fileDisplay);
-        p.add(buttonArea);
+//        p.add(entryFields);
+        p.setLayout(new BorderLayout());
+        p.add(fileDisplay, BorderLayout.CENTER);
+        p.add(buttonArea, BorderLayout.SOUTH);
         add(p);
 
         setVisible(true);
 
+        Timer task = new Timer(200, e->{
 
+        });
         //Action Listeners
-
         openFilesBtn.addActionListener(e ->{
+            System.out.println(test);
             fileChooser = new JFileChooser();
             fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             fileChooser.setAcceptAllFileFilterUsed(false);
@@ -121,6 +140,7 @@ public class ClientWindow extends JFrame {
                     System.out.println(givenPath);
                     //Creating the packet of data to be sent
                     System.out.println(tempFile.getName());
+                    ta.append("\n" + givenPath + tempFile.getName());
                     Packet p = new Packet(tempFile, givenPath);
                     String testString = p.getFilePath(); //DBS
 

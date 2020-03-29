@@ -29,8 +29,10 @@ public class Packet {
         for(long i = 0; i < fileSize; i++){
             out.writeByte(in.readByte());
 
-            if(i%500000 == 0)
+            if(i%500000 == 0){
                 System.out.println((((double)i/(double)fileSize)*100) + "%");
+
+            }
         }
     }
 
