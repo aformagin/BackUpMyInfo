@@ -28,6 +28,9 @@ public class Packet {
         //Send bytes from file to stream
         for(long i = 0; i < fileSize; i++){
             out.writeByte(in.readByte());
+
+            if(i%500000 == 0)
+                System.out.println((((double)i/(double)fileSize)*100) + "%");
         }
     }
 

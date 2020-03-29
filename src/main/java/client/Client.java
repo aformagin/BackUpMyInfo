@@ -40,6 +40,7 @@ public class Client {
                                 "\nSIZE: " + p.getFileSize() +
                                 "\nNAME: " + p.getFilename());
                         p.send(dataOutputStream);
+                        System.out.println("Finished File");
                     }
                     if(fileQueue.isEmpty()){
                         dataOutputStream.close();
