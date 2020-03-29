@@ -84,29 +84,42 @@ public class ClientWindow extends JFrame {
     }
 
     public Queue<Packet> populateQueue(File args){
-        File f = args;
+        File selectedDir = args; //This is the initial directory
         //System.getproperty(os.name)
         //Listing the initial file and folder list
-        System.out.println(Arrays.toString(f.listFiles()));
+        System.out.println(Arrays.toString(selectedDir.listFiles()));
 
 
-        ArrayList<File> dirList = new ArrayList<>(new LinkedList<>(Arrays.asList(f.listFiles())));
+        ArrayList<File> dirList = new ArrayList<>(new LinkedList<>(Arrays.asList(selectedDir.listFiles())));
 
         for(int x = 0; x < dirList.size(); x++){
-            File temp = dirList.get(x);
-            if(temp.isDirectory()){
-                System.out.println(temp.listFiles());
-                for(int y = 0; y < temp.listFiles().length; y++){
-                    if(!temp.listFiles().equals(null)){
+            File tempFile = dirList.get(x);
+            if(tempFile.isDirectory()){
+                System.out.println(tempFile.listFiles());
+                for(int y = 0; y < tempFile.listFiles().length; y++){
+                    if(!tempFile.listFiles().equals(null)){
                         System.out.println("Adding folder");
-                        dirList.add(temp.listFiles()[y]);
+                        dirList.add(tempFile.listFiles()[y]);
                     }
                 }
             }
 
-            else if(temp.isFile() && !temp.equals(null)){
+            else if(tempFile.isFile() && !tempFile.equals(null)){
                 try {
-                    Packet p = new Packet(temp);
+
+                    String lookFor = selectedDir.getName();
+                    String givenPath = "backup/";
+
+                    //Truncating the file path for relative uses
+                    if(tempFile.getPath().contains(lookFor)){
+                        int n = tempFile.getPath().indexOf(lookFor);
+                        givenPath = tempFile.getPath().substring(n);
+                    }
+                    givenPath = FilenameUtils.getPath(givenPath);
+                    System.out.println(givenPath);
+                    Packet p = new Packet(tempFile.getName(), givenPath);
+                    String testString = p.getFilePath();
+
                     q.add(p);
                     System.out.println("Adding File");
                 } catch (IOException e) {

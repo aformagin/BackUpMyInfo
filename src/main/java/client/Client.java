@@ -42,10 +42,7 @@ public class Client {
                         System.out.println("PATH: " + p.getFilePath() +
                                 "\nSIZE: " + p.getFileSize() +
                                 "\nNAME: " + p.getFilename());
-                        dataOutputStream.writeUTF(p.getFilePath());//File path
-                        dataOutputStream.writeInt(p.getFileSize()); //Size
-                        dataOutputStream.writeUTF(p.getFilename());//Name of file
-                        dataOutputStream.write(p.getByteArray());//ByteArray
+                        p.send(dataOutputStream);
                     }
                     if(fileQueue.isEmpty()){
                         dataOutputStream.close();

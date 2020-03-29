@@ -18,9 +18,10 @@ public class Packet {
 
     public Packet(String filename, String filePath) throws IOException {
         this.filename = filename;
-        this.filePath = filePath;
         File file = new File(this.filename);
+        this.filePath = filePath;
         if(!file.exists()) throw new IOException();
+        this.fileSize = file.length();
         in = new BufferedInputStream(new FileInputStream(file));
     }
 
